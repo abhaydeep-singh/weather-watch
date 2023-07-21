@@ -8,6 +8,7 @@ class Page1:
     def __init__(self):
         self.root = Tk()
         self.root.geometry('800x800') # (width x height)
+        self.root.title("Weather Watch")
         self.root.resizable(False,False)
         self.frame=Frame(self.root,bg='#333333')
         self.frame.place(x=0, y=0, height=800, width=800)
@@ -34,12 +35,11 @@ class Page1:
         a = self.entry1.get()
         b = self.entry2.get()
 
-        if a == self.userName and b == self.passWord:
-           
+        if a == self.userName and b == self.passWord:           
             # page routing
             self.root.destroy()
             home.Home()
-            messagebox.showinfo(title="Login Success", message="You successfully logged in.")
+            # messagebox.showinfo(title="Login Success", message="You successfully logged in.")
         elif a == '' or b == '':
             messagebox.showwarning(title="Warning", message="Do not leave any space empty")
         else:
