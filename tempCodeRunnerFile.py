@@ -1,0 +1,1 @@
+bg= self.themeColor, fg='Black', font=('Arial',15), command = self.onClick
