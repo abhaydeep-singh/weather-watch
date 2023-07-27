@@ -1,8 +1,9 @@
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
+import database, register
 import home
-class Page1:
+class Login:
     themeColor = 'yellow'
     userName = 'abhay'
     passWord = 'singh'
@@ -15,7 +16,7 @@ class Page1:
         self.frame.place(x=0, y=0, height=800, width=800)
 
         # inserting image
-        self.img1=Image.open('G:\Python\Projects\images\weather.png').resize((100,100)) #opening and resizing image
+        self.img1=Image.open('images\weather.png').resize((100,100)) #opening and resizing image
         self.image1=ImageTk.PhotoImage(self.img1)
         self.label=Label(self.frame, image=self.image1, bg='#333333')
         self.label.place(x=180, y=140, width=100,height=100)
@@ -42,37 +43,35 @@ class Page1:
         self.entry2.place(x=300, y=410, height=30, width=300)
 
         # login button
-        self.btn1=Button(self.frame,text = 'Login', bg= self.themeColor, fg='Black', font=('Arial',15), command = self.onClick)
+        self.btn1=Button(self.frame,text = 'Login', bg= self.themeColor, fg='Black', font=('Arial',15), command = self.login)
         self.btn1.place(x=300, y=480, height= 40, width= 200)
 
         # Register button
-        self.btn2=Button(self.frame,text = "Don't have any account?", bg='#333333', fg=self.themeColor, font=('Arial',12), borderwidth=0, relief="solid",anchor='w')
+        self.btn2=Button(self.frame,text = "Don't have any account?", bg='#333333', fg=self.themeColor, font=('Arial',12), borderwidth=0, relief="solid",anchor='w',command=self.register)
         self.btn2.place(x=300, y=520, height= 40, width= 220)
 
         
         self.root.mainloop()
 
     # method to get data from two entries
-    def onClick(self):
-        a = self.entry1.get()
-        b = self.entry2.get()
-
-        if a == self.userName and b == self.passWord:           
-            # page routing
-            self.root.destroy()
-            home.Home()
-            # messagebox.showinfo(title="Login Success", message="You successfully logged in.")
-        elif a == '' or b == '':
-            messagebox.showwarning(title="Warning", message="Do not leave any space empty")
+    def login(self):
+        print('button is clicked')
+        if self.entry1.get() and self.entry2.get():
+            print('data is given')
+            res = database.loginUser((self.entry1.get(), self.entry2.get()))
+            if res:
+                messagebox.showinfo('Success', 'Login is successful.')
+                self.root.destroy()
+                home.Home()
+            else:
+                messagebox.showerror('Alert', 'Invalid username/password.')
         else:
-            messagebox.showerror(title="Error", message="Invalid login.")
+            print('enter details')
+            messagebox.showerror('Alert', 'Please your details.')
 
+    def register(self):
+        self.root.destroy()
+        register.Register()
 
-
-        
-   
-
-
-        
 if __name__ == '__main__':
-    Page1()
+    Login()

@@ -1,8 +1,6 @@
 from tkinter import *
 import requests
-import datetime
 from PIL import Image, ImageTk
-import login
 
 class Home:
     API_KEY = "ce42a8b45d885f469ac82d490100d6a2"
@@ -24,7 +22,7 @@ class Home:
         self.frame3 = Frame(self.root, bg='#2e2e2e')
         self.frame3.place(x=480, y=260, height=240, width=290)
 
-        self.logo1 = Image.open("images\weather.png").resize((120, 120))
+        self.logo1 = Image.open("G:\Python\Projects\images\weather.png").resize((120, 120))
         self.logoImage = ImageTk.PhotoImage(self.logo1)
         self.label = Label(self.root, image=self.logoImage, bg='#292929')
         self.label.place(x=60, y=40, width=120, height=120)
@@ -64,27 +62,17 @@ class Home:
                                          command=self.get_weather)
         self.get_weather_button.place(x=510, y=400, height=30, width=230)
 
-        self.forecast_label_text = Label(self.frame1, text="4-day Forecast :", bg='#333333', fg='yellow',font=('Arial', 20,'underline'), anchor='w')
-        self.forecast_label_text.place(x=80, y=500, height=40, width=200)
-
-        #days label
-        self.day_labels = []
-        for i in range(4):
-            day_label = Label(self.frame1, text="", font=('Arial', 16), bg='#333333', fg='yellow', anchor='w')
-            day_label.place(x=80, y=540 + 60 * i, height=40, width=300)
-            self.day_labels.append(day_label)
-        
+        self.forecast_label_text = Label(self.frame1, text="4-day Forecast", bg='#333333', fg='yellow',
+                                         font=('Arial', 20), anchor='w')
+        self.forecast_label_text.place(x=90, y=490, height=40, width=130)
 
         self.forecast_labels = []
         for i in range(4):
             forecast_label = Label(self.frame1, text="", font=('Arial', 16), bg='#333333', fg='white', anchor='w')
-            forecast_label.place(x=220, y=540 + 60 * i, height=40, width=300)
+            forecast_label.place(x=90, y=540 + 60 * i, height=40, width=300)
             self.forecast_labels.append(forecast_label)
-        
-       
 
         self.root.mainloop()
-   
 
     def get_weather(self):
         city = self.city_entry.get()
@@ -111,9 +99,6 @@ class Home:
 
             forecast_response = requests.get(self.FORECAST_API_URL, params=forecast_params)
             forecast_data = forecast_response.json()
-            # print(forecast_data) #getting date
-            if str(forecast_data['list'][0]['dt_txt'])[:10]=='2023-07-27':
-                print('this is date 27')
 
             if weather_data["cod"] == 200 and forecast_data.get("list"):
                 weather_info = weather_data['weather'][0]['description']
@@ -129,14 +114,6 @@ class Home:
                     temperature_info = f"{forecast_data['list'][8 * i]['main']['temp']} °C"
                     forecast_text = f"{forecast_info}, {temperature_info}"
                     self.forecast_labels[i].config(text=forecast_text)
-
-                #inserting day names
-                date = datetime.datetime.now()
-                for i in range(4): 
-                    date += datetime.timedelta(days=1)
-                    dayName = date.strftime("%A")
-                    self.day_labels[i].config(text=dayName)
-
             else:
                 self.weather_label.config(text=f"Error: Unable to fetch weather data for {city}.")
         except requests.exceptions.RequestException:
