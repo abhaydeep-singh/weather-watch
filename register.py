@@ -1,12 +1,12 @@
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
-import database,login,home
+import database,login,home_if_login
 
 class Register:
     themeColor = 'yellow'
-    userName = 'abhay'
-    passWord = 'singh'
+    # userName = 'abhay'
+    # passWord = 'singh'
     def __init__(self):
         self.root = Tk()
         self.root.geometry('800x800') # (width x height)
@@ -46,14 +46,14 @@ class Register:
         self.label3 = Label(self.frame, text='E-Mail',bg='#333333', fg= self.themeColor, font=('Arial',18,), anchor="w")
         self.label3.place(x=300, y=460, height=30, width=200)
 
-        self.entry3 = Entry(self.frame, bg='#333333',fg ='white',show="*", borderwidth = 2, relief = "groove")
+        self.entry3 = Entry(self.frame, bg='#333333',fg ='white', borderwidth = 2, relief = "groove")
         self.entry3.place(x=300, y=490, height=30, width=300)
 
         # text = email
         self.label4 = Label(self.frame, text='Enter Your City',bg='#333333', fg= self.themeColor, font=('Arial',18,), anchor="w")
         self.label4.place(x=300, y=540, height=30, width=200)
 
-        self.entry4 = Entry(self.frame, bg='#333333',fg ='white',show="*", borderwidth = 2, relief = "groove")
+        self.entry4 = Entry(self.frame, bg='#333333',fg ='white',borderwidth = 2, relief = "groove")
         self.entry4.place(x=300, y=570, height=30, width=300)
 
         # register button
@@ -70,11 +70,11 @@ class Register:
     
     def register(self):
         if self.entry1.get() and self.entry2.get() and self.entry3.get() and self.entry4.get():
-            res = database.addUser((self.entry1.get(), self.entry2.get(), self.entry3.get(),self.entry4.get()))
+            res = database.addUser((self.entry1.get(), self.entry2.get(), self.entry4.get(),self.entry3.get()))
             if res:
                 messagebox.showinfo('Success', 'User added successfully.')
                 self.root.destroy()
-                home.Home()
+                home_if_login.Home2(res)
             else:
                 messagebox.showwarning('Alert', 'Username already taken.')
         else:

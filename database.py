@@ -25,3 +25,13 @@ def addUser(data):
     except Exception as e:
         print(e)
         return False
+    
+
+def city_autofill(data):
+    try:
+        cursor.execute('SELECT `city` FROM `users` WHERE `username` = %s ', data)
+        con.commit()
+        return cursor.fetchall()
+    except Exception as e:
+        print(e)
+        # return False

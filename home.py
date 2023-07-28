@@ -1,8 +1,10 @@
 from tkinter import *
+from tkinter import messagebox
 import requests
 import datetime
 from PIL import Image, ImageTk
 import login
+
 
 class Home:
     API_KEY = "ce42a8b45d885f469ac82d490100d6a2"
@@ -63,25 +65,21 @@ class Home:
         self.get_weather_button = Button(self.root, text="Get Weather", bg='yellow', fg='Black', font=('Arial', 15),
                                          command=self.get_weather)
         self.get_weather_button.place(x=510, y=400, height=30, width=230)
-
-        self.forecast_label_text = Label(self.frame1, text="4-day Forecast :", bg='#333333', fg='yellow',font=('Arial', 20,'underline'), anchor='w')
-        self.forecast_label_text.place(x=80, y=500, height=40, width=200)
-
-        #days label
-        self.day_labels = []
-        for i in range(4):
-            day_label = Label(self.frame1, text="", font=('Arial', 16), bg='#333333', fg='yellow', anchor='w')
-            day_label.place(x=80, y=540 + 60 * i, height=40, width=300)
-            self.day_labels.append(day_label)
-        
-
-        self.forecast_labels = []
-        for i in range(4):
-            forecast_label = Label(self.frame1, text="", font=('Arial', 16), bg='#333333', fg='white', anchor='w')
-            forecast_label.place(x=220, y=540 + 60 * i, height=40, width=300)
-            self.forecast_labels.append(forecast_label)
-        
        
+
+       # popup for login
+        def show_login_popup():
+            response = messagebox.askyesno("Login", "Do you want to log in?")
+            if response:
+                # Add your login logic here (e.g., open a login window)
+                self.root.destroy()
+                login.Login()
+            else:
+                # Add any action you want to perform if the user chooses not to log in
+                print("User chose not to log in.") 
+
+        # After 10 seconds, show the login popup
+        self.root.after(10000, show_login_popup)
 
         self.root.mainloop()
    
@@ -123,20 +121,7 @@ class Home:
                 self.weather_label.config(text=weather_info)
                 self.temperature_label.config(text=temperature_info)
                 self.humidity_label.config(text=humidity_info)
-
-                for i in range(4):
-                    forecast_info = forecast_data['list'][8 * i]['weather'][0]['description']
-                    temperature_info = f"{forecast_data['list'][8 * i]['main']['temp']} °C"
-                    forecast_text = f"{forecast_info}, {temperature_info}"
-                    self.forecast_labels[i].config(text=forecast_text)
-
-                #inserting day names
-                date = datetime.datetime.now()
-                for i in range(4): 
-                    date += datetime.timedelta(days=1)
-                    dayName = date.strftime("%A")
-                    self.day_labels[i].config(text=dayName)
-
+              
             else:
                 self.weather_label.config(text=f"Error: Unable to fetch weather data for {city}.")
         except requests.exceptions.RequestException:
