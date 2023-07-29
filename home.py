@@ -11,6 +11,9 @@ class Home:
     API_URL = "http://api.openweathermap.org/data/2.5/weather"
     FORECAST_API_URL = "http://api.openweathermap.org/data/2.5/forecast"
 
+    
+    
+
     def __init__(self):
         self.root = Tk()
         self.root.geometry('800x800')  # (width x height)
@@ -132,6 +135,11 @@ class Home:
                 self.weather_label.config(text=weather_info)
                 self.temperature_label.config(text=temperature_info)
                 self.humidity_label.config(text=humidity_info)
+
+
+                
+
+                
               
             else:
                 self.weather_label.config(text=f"Error: Unable to fetch weather data for {city}.")

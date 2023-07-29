@@ -74,7 +74,7 @@ class Register:
             if res:
                 messagebox.showinfo('Success', 'User added successfully.')
                 self.root.destroy()
-                home_if_login.Home2(res)
+                login.Login()
             else:
                 messagebox.showwarning('Alert', 'Username already taken.')
         else:

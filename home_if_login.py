@@ -11,13 +11,45 @@ class Home2:
     API_KEY = "ce42a8b45d885f469ac82d490100d6a2"
     API_URL = "http://api.openweathermap.org/data/2.5/weather"
     FORECAST_API_URL = "http://api.openweathermap.org/data/2.5/forecast"
+    weather_images = {
+            "default": Image.open('images/weather.png').resize((120, 120)),
+            "sunny": Image.open('images/sunny.png').resize((120, 120)),
+            "scattered clouds": Image.open('images/cloud.png').resize((120, 120)),
+            "broken clouds": Image.open('images/cloud.png').resize((120, 120)),
+            "few clouds": Image.open('images/cloud.png').resize((120, 120)),
+            "rain": Image.open('images/rain.png').resize((120, 120)),
+            "light rain": Image.open('images/rain.png').resize((120, 120)),
+            "shower rain": Image.open('images/rain.png').resize((120, 120)),
+            "moderate rain": Image.open('images/rain.png').resize((120, 120)),
+            "thunderstorm": Image.open('images/thunder.png').resize((120, 120)),
+            "clear sky": Image.open('images/sunny.png').resize((120, 120)),
+            "mist": Image.open('images/fog.png').resize((120, 120)),
+            # Add more images and corresponding weather descriptions here
+        }
 
 
      
 
 
 
-
+    # voice search
+    def voice_search(self):
+        recognizer = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Listening...")
+            # self.listning_label.config(text='Listening') 
+            recognizer.adjust_for_ambient_noise(source)
+            audio = recognizer.listen(source)
+        
+        try:
+            city = recognizer.recognize_google(audio)
+            self.city_entry.delete(0, END)  # Clear existing entry
+            self.city_entry.insert(0, city)  # Insert the voice-searched city
+            self.get_weather()  # Get weather for the voice-searched city
+        except sr.UnknownValueError:
+            print("Could not understand audio")
+        except sr.RequestError as e:
+            print(f"Error in API request: {e}")
 
 
     def __init__(self, res): # (self, res)
@@ -39,9 +71,9 @@ class Home2:
         self.frame4 = Frame(self.root, bg='#333333', borderwidth = 2, relief= "groove" )
         self.frame4.place(x=45, y=490, height=290, width=420)
 
-        self.logo1 = Image.open("images\weather.png").resize((120, 120))
-        self.logoImage = ImageTk.PhotoImage(self.logo1)
-        self.label = Label(self.root, image=self.logoImage, bg='#292929')
+        self.current_weather_image = self.weather_images["default"]
+        self.logoImage = ImageTk.PhotoImage(self.current_weather_image)
+        self.label = Label(self.frame2, image=self.logoImage, bg='#292929')
         self.label.place(x=60, y=40, width=120, height=120)
 
         self.textLabel = Label(self.frame2, text='Weather Watch', bg='#292929', fg='yellow', font=('Arial', 60),
@@ -114,24 +146,7 @@ class Home2:
         self.root.mainloop()
 
 
-    # voice search
-    def voice_search(self):
-        recognizer = sr.Recognizer()
-        with sr.Microphone() as source:
-            print("Listening...")
-            # self.listning_label.config(text='Listening') 
-            recognizer.adjust_for_ambient_noise(source)
-            audio = recognizer.listen(source)
-        
-        try:
-            city = recognizer.recognize_google(audio)
-            self.city_entry.delete(0, END)  # Clear existing entry
-            self.city_entry.insert(0, city)  # Insert the voice-searched city
-            self.get_weather()  # Get weather for the voice-searched city
-        except sr.UnknownValueError:
-            print("Could not understand audio")
-        except sr.RequestError as e:
-            print(f"Error in API request: {e}")
+    
 
 
    
@@ -186,6 +201,17 @@ class Home2:
                     date += datetime.timedelta(days=1)
                     dayName = date.strftime("%A")
                     self.day_labels[i].config(text=dayName)
+
+                weather_description = weather_data['weather'][0]['description']
+                if weather_description in self.weather_images:
+                    self.current_weather_image = self.weather_images[weather_description]
+                    self.logoImage = ImageTk.PhotoImage(self.current_weather_image)
+                    self.label.config(image=self.logoImage)
+                else:
+                    # If the weather description is not found in weather_images, set a default image.
+                    self.current_weather_image = self.weather_images["default"]
+                    self.logoImage = ImageTk.PhotoImage(self.current_weather_image)
+                    self.label.config(image=self.logoImage)
 
             else:
                 self.weather_label.config(text=f"Error: Unable to fetch weather data for {city}.")
