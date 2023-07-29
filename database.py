@@ -12,7 +12,7 @@ cursor = con.cursor()
 def loginUser(data):
     try:
         cursor.execute('SELECT * FROM `users` WHERE `username` = %s AND `password` = %s', data)
-        return cursor.fetchone()
+        return cursor.fetchone()    
     except Exception as e:
         print(e)
         return False
@@ -27,11 +27,11 @@ def addUser(data):
         return False
     
 
-def city_autofill(data):
-    try:
-        cursor.execute('SELECT `city` FROM `users` WHERE `username` = %s ', data)
-        con.commit()
-        return cursor.fetchall()
-    except Exception as e:
-        print(e)
+# def city_autofill(data):
+#     try:
+#         cursor.execute('SELECT `city` FROM `users` WHERE `username` = %s ', data)
+#         con.commit()
+#         return cursor.fetchall()
+#     except Exception as e:
+#         print(e)
         # return False

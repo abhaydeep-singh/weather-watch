@@ -4,6 +4,7 @@ import requests
 import datetime
 from PIL import Image, ImageTk
 import login, database
+import speech_recognition as sr
 
 
 class Home2:
@@ -11,8 +12,16 @@ class Home2:
     API_URL = "http://api.openweathermap.org/data/2.5/weather"
     FORECAST_API_URL = "http://api.openweathermap.org/data/2.5/forecast"
 
-    def __init__(self): # (self, res)
-        # self.res = res 
+
+     
+
+
+
+
+
+
+    def __init__(self, res): # (self, res)
+        self.res = res 
         self.root = Tk()
         self.root.geometry('800x800')  # (width x height)
         self.root.title("Weather Watch")
@@ -73,6 +82,17 @@ class Home2:
         self.forecast_label_text = Label(self.root, text="Forecast :", bg='#333333', fg='yellow',font=('Arial', 20,'underline'), anchor='w')
         self.forecast_label_text.place(x=80, y=500, height=40, width=200)
 
+        # self.listning_label = Label(self.root, text="", font=('Arial', 18), bg='white', fg='black', anchor='w')
+        # self.listning_label.place(x=510, y=510, height=40, width=250)
+
+
+        #voice input button
+
+        self.voice = Image.open("images/voice.png").resize((50, 50))
+        self.voiceImage = ImageTk.PhotoImage(self.voice)
+        self.voice_button = Button(self.root, bg= '#2e2e2e',image=self.voiceImage, font=('Arial',15),borderwidth= 0, command =self.voice_search)
+        self.voice_button.place(x=590, y=435, height=60, width=60)
+
         #days label
         self.day_labels = []
         for i in range(4):
@@ -88,18 +108,38 @@ class Home2:
             self.forecast_labels.append(forecast_label)
 
        # autofill city
-        # self.city_entry.insert(0, self.res[-2])
-        # self.get_weather()
+        self.city_entry.insert(0, self.res[-2])
+        self.get_weather()
         
-       
-
         self.root.mainloop()
+
+
+    # voice search
+    def voice_search(self):
+        recognizer = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Listening...")
+            # self.listning_label.config(text='Listening') 
+            recognizer.adjust_for_ambient_noise(source)
+            audio = recognizer.listen(source)
+        
+        try:
+            city = recognizer.recognize_google(audio)
+            self.city_entry.delete(0, END)  # Clear existing entry
+            self.city_entry.insert(0, city)  # Insert the voice-searched city
+            self.get_weather()  # Get weather for the voice-searched city
+        except sr.UnknownValueError:
+            print("Could not understand audio")
+        except sr.RequestError as e:
+            print(f"Error in API request: {e}")
+
+
    
 
     def get_weather(self):
         city = self.city_entry.get()
         if not city:
-            self.weather_label.config(text="Please enter a city.")
+            self.weather_label.config(text="Enter a city.")
             return
 
         weather_params = {
@@ -112,7 +152,7 @@ class Home2:
             "q": city,
             "appid": self.API_KEY,
             "units": "metric",
-            "cnt": 32,  # Get data for the next 4 days (8 forecasts per day for 4 days)
+            "cnt": 32,  # Get data for the next 4 days
         }
 
         try:
@@ -137,7 +177,7 @@ class Home2:
                 for i in range(4):
                     forecast_info = forecast_data['list'][8 * i]['weather'][0]['description']
                     temperature_info = f"{forecast_data['list'][8 * i]['main']['temp']} °C"
-                    forecast_text = f"{forecast_info}, {temperature_info}"
+                    forecast_text = f" {forecast_info}, {temperature_info}"
                     self.forecast_labels[i].config(text=forecast_text)
 
                 #inserting day names

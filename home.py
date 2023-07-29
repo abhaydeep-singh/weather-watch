@@ -65,6 +65,10 @@ class Home:
         self.get_weather_button = Button(self.root, text="Get Weather", bg='yellow', fg='Black', font=('Arial', 15),
                                          command=self.get_weather)
         self.get_weather_button.place(x=510, y=400, height=30, width=230)
+
+        self.login_button = Button(self.root, text="Login (access all features)", bg='#2e2e2e', fg='yellow',borderwidth = 0, font=('Arial', 15),
+                                         command=self.direct_login)
+        self.login_button.place(x=500, y=450, height=30, width=250)
        
 
        # popup for login
@@ -82,6 +86,13 @@ class Home:
         self.root.after(10000, show_login_popup)
 
         self.root.mainloop()
+
+
+
+        # function for login
+    def direct_login(self):
+        self.root.destroy()
+        login.Login()
    
 
     def get_weather(self):
@@ -100,7 +111,7 @@ class Home:
             "q": city,
             "appid": self.API_KEY,
             "units": "metric",
-            "cnt": 32,  # Get data for the next 4 days (8 forecasts per day for 4 days)
+            "cnt": 32,  # Get data for the next 4 daysdemo
         }
 
         try:
